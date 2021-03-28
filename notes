@@ -1,0 +1,6 @@
+
+#include <sys/types.h> before #include <fcntl.h> in runtime/main.c
+runtime/io.c
+
+#include <sys/types.h> before #include <sys/stat.h> in mosml.c
+

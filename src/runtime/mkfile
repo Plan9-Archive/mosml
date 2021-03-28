@@ -1,0 +1,49 @@
+</$objtype/mkfile
+
+TARG=camlrunm
+
+OFILES=\
+	alloc.$O\
+	callback.$O\
+	compare.$O\
+	debugger.$O\
+	expand.$O\
+	extern.$O\
+	externcp.$O\
+	fail.$O\
+	fix_code.$O\
+	floats.$O\
+	freelist.$O\
+	gc_ctrl.$O\
+	hash.$O\
+	intern.$O\
+	interncp.$O\
+	interp.$O\
+	ints.$O\
+	io.$O\
+	lexing.$O\
+	main.$O\
+	major_gc.$O\
+	md5sum.$O\
+	memory.$O\
+	meta.$O\
+	minor_gc.$O\
+	misc.$O\
+	mosml.$O\
+	parsing.$O\
+	prims.$O\
+	roots.$O\
+	runtime.$O\
+	signals.$O\
+	#snprintf.$O\
+	stacks.$O\
+	str.$O\
+	sys.$O\
+	unix.$O\
+
+
+BIN=/$objtype/bin/aux
+</sys/src/cmd/mkone
+
+CC=pcc
+CFLAGS=-B -D_POSIX_SOURCE -D_BSD_EXTENSION -Dplan9 -Dunix -DT$objtype -c

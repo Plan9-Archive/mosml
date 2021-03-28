@@ -1,0 +1,13 @@
+# order is important!
+DIRS=runtime mosmlyac compiler launch mosmllib toolssrc lex doc
+
+default:V: all
+
+all clean nuke install installall:V:
+	for(i in $DIRS) @{
+		cd $i
+		mk $target
+		cd ..
+	}
+
+

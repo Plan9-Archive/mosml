@@ -1,0 +1,37 @@
+<../../mkfile.inc
+MOSMLC=aux/camlrunm /sys/lib/mosml/mosmlcmp -stdlib /sys/lib/mosml -I .
+MOSMLL=aux/camlrunm /sys/lib/mosml/mosmllnk -stdlib /sys/lib/mosml -I .
+all:V: install
+
+makebase: Database.uo Htmlsigs.uo Lexer.uo Parser.uo Parsspec.uo \
+	Printbase.uo Texsigs.uo makebase.uo Stack.uo Hasht.uo
+	$MOSMLL -o $target makebase.uo
+
+helpsigs.val: makebase
+	./makebase /sys/src/cmd/mosml/src/mosmllib
+
+install:V: helpsigs.val
+	cp helpsigs.val /sys/lib/mosml
+	test -d /sys/lib/mosml/html || mkdir /sys/lib/mosml/html
+	cp htmlsigs/* /sys/lib/mosml/html
+	cp index.txt /sys/lib/mosml
+
+clean:V:
+	rm -f helpsigs.val htmlsigs/* index.html index.tex index.txt texsigsigs.tex *.ui *.uo
+	rm -f Parser.sig Parser.sml Lexer.sml makebase
+
+Lexer.uo: Lexer.sml
+	aux/camlrunm /sys/lib/mosml/mosmlcmp -stdlib /sys/lib/mosml -I . Lexer.sml
+
+### DO NOT DELETE THIS LINE
+Texsigs.uo: Texsigs.ui Database.ui 
+Parser.ui: Asynt.uo 
+Parser.uo: Parser.ui Asynt.uo 
+Lexer.uo: Parser.ui Stack.ui Hasht.ui 
+makebase.uo: Htmlsigs.ui Database.ui Printbase.uo Parsspec.uo 
+Stack.uo: Stack.ui 
+Printbase.uo: Database.ui 
+Parsspec.uo: Asynt.uo Parser.ui Lexer.uo Database.ui 
+Htmlsigs.uo: Htmlsigs.ui Database.ui 
+Hasht.uo: Hasht.ui 
+Database.uo: Database.ui 

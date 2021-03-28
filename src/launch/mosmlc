@@ -1,0 +1,82 @@
+#!/bin/rc
+
+rfork en
+LIB=/sys/lib/mosml
+
+linkalso=true
+includes=()
+compopt=(-conservative)
+linkopt=()
+custom=()
+linkfiles=()
+. /$cputype/mkfile
+cc=$CC
+ccfiles=()
+cclib=()
+ccopt=()
+linkout=a.out
+context=-structure
+
+while(! ~ $#* 0) {
+	switch($1) {
+	case *.sml
+		aux/camlrunm $LIB/mosmlcmp -stdlib $LIB $includes $compopt $context $1 || exit $status
+		context=($context `{echo $i | sed 's/\.sml$/.ui/'})
+		linkfiles=($linkfiles $1)
+	case *.sig
+		aux/camlrunm $LIB/mosmlcmp -stdlib $LIB $includes $compopt $context $1 || exit $status
+		context=($context `{echo $i | sed 's/\.sml$/.ui/'})
+	case *.ui
+		context=($context $1)
+	case *.uo
+		linkfiles=($linkfiles $1)
+	case -structure -toplevel
+		context=($context $1)
+	case -c
+		linkalso=false
+	case -I -include
+		includes=($includes -I $2)
+		shift
+	case -P -perv
+		compopt=($compopt -P $2)
+		linkopt=($linkopt -P $2)
+		shift
+	case -q -quotation -imptype -valuepoly -orthodox -conservative -liberal
+		compopt=($compopt $1)
+	case -i -g -debug
+		compopt=($compopt $1)
+		linkopt=($linkopt $1)
+	case -m -msgstyle
+		compopt=($compopt -msgstyle $2)
+		shift
+	case -noheader -noautolink -standalone
+		linkopt=($linkopt $1)
+	case -o -exec
+		linkout=$2
+		shift
+	case -stdlib
+		LIB=$2
+		shift
+	case -v -version
+		echo 'The Moscow ML system, version 2.00 (June 2000)'	
+		echo '   (standard library from '$LIB')'
+		aux/camlrunm -V
+		aux/camlrunm $LIB/mosmlcmp -version
+		aux/camlrunm $LIB/mosmllnk -version
+	case -files
+		linkfiles=($linkfiles $1 $2)
+		shift
+	case -*
+		echo 'unknown option '^$1^' ignored' >[1=2]
+	case *
+		echo 'cannot handle file '^$1^'; ignored' >[1=2]
+	}
+	shift
+}
+
+if(~ $linkalso true && ! ~ $#linkfiles 0){
+	aux/camlrunm $LIB/mosmllnk -stdlib $LIB $includes $custom $linkopt \
+		-exec $linkout $linkfiles
+	exit $status
+}
+exit ''

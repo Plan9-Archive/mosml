@@ -1,0 +1,14 @@
+# Plan 9 mkfile for launching Moscow ML
+# Based on Caml Light (copyright 1993 INRIA)
+
+</$objtype/mkfile
+<../mkfile.inc
+
+all:V: mosml mosmlc mosmllex
+
+install:V: mosml mosmlc mosmllex
+	cp mosml mosmlc mosmllex /rc/bin
+	echo '#!/bin/aux/camlrunm' >/sys/lib/mosml/header
+
+nuke clean:V:
+	# do nothing
